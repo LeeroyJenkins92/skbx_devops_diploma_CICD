@@ -1,0 +1,43 @@
+---
+
+- hosts: nginx-servers
+
+  vars:
+    back_ip: 192.168.10.13
+    back_port: 5000
+
+  tasks:
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+
+    - name: "Install GnuPG and GIT and Nginx"
+      apt:
+        pkg:
+          - gnupg
+          - git
+          - nginx
+          
+
+    - name: "Ensure Nginx default server is absent"
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: absent
+
+
+    - name: "Add managed vhost config file"
+      template:
+         src: /home/leej92/skbx_devops_diploma/ansible-templates/nginx.conf.j2
+         dest: /etc/nginx/sites-enabled/nginx.conf
+         force: true
+         owner: root
+         mode: 0644
+      notify: reload nginx
+
+  handlers:
+    - name: reload nginx
+      service: name=nginx state=reloaded
+  
