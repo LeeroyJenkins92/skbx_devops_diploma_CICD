@@ -1,0 +1,90 @@
+---
+
+- hosts: gl-servers
+
+
+  tasks:
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+
+    - name: "Install Required Soft"
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - gnupg
+          - lsb-release
+          - python
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add signing key
+      ansible.builtin.apt_key:
+        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+        state: present
+
+    - name: Add repository into sources list
+      ansible.builtin.apt_repository:
+        repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name:
+          - docker
+          - docker.io
+          - docker-compose
+          - docker-registry
+        state: latest
+        update_cache: true
+
+
+    - name: Install Python-GitLab Module
+      pip:
+        name: python-gitlab
+
+
+    - name: Install a container for GitLAB Runner
+      shell: |
+        docker run -d --name gitlab-runner --restart always \
+        -v /srv/gitlab-runner/config:/etc/gitlab-runner \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        gitlab/gitlab-runner:latest
+      ignore_errors: yes
+      
+
+    - name: Register runner
+      community.general.gitlab_runner:
+        api_url: https://gitlab.com/
+        api_token: "{{ access_token }}"
+        registration_token: "{{ reg_token }}"
+        description: skbx-CICD-runner
+        state: present
+        active: True
+        run_untagged: yes
+        locked: False
+
+    - name: Replace volume in runner config
+      ansible.builtin.lineinfile:
+        path: /srv/gitlab-runner/config
+        regexp: '^volumes'
+        line: volumes = ["/cache", "/var/www/:/www:rw"]
+        owner: root
+        mode: '0600'
+
+    - name: Restart a container
+      docker_container:
+        name: gitlab-runner
+        image: gitlab/gitlab-runner:latest
+        state: started
+        restart: yes

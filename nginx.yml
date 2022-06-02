@@ -1,10 +1,6 @@
 ---
 
-- hosts: nginx-servers
-
-  vars:
-    back_ip: 192.168.10.13
-    back_port: 5000
+- hosts: gl-servers
 
   tasks:
 
@@ -14,23 +10,19 @@
         update_cache: yes
         cache_valid_time: 86400 #One day
 
-    - name: "Install GnuPG and GIT and Nginx"
+    - name: "Install Nginx"
       apt:
         pkg:
-          - gnupg
-          - git
           - nginx
           
-
     - name: "Ensure Nginx default server is absent"
       file:
         path: "/etc/nginx/sites-enabled/default"
         state: absent
 
-
     - name: "Add managed vhost config file"
       template:
-         src: /home/leej92/skbx_devops_diploma/ansible-templates/nginx.conf.j2
+         src: /home/leej92/skbx_devops_diploma_CICD/ansible-templates/nginx.conf.j2
          dest: /etc/nginx/sites-enabled/nginx.conf
          force: true
          owner: root
@@ -40,4 +32,9 @@
   handlers:
     - name: reload nginx
       service: name=nginx state=reloaded
+
+    - name: "Delete root dir"
+      file:
+        path: "/var/www/html"
+        state: absent
   
