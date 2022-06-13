@@ -6,7 +6,7 @@
 
 #: git clone https://github.com/LeeroyJenkins92/skbx_devops_diploma_CICD
 
-#: cd ./skbx_infra/Terraform 
+#: cd ./skbx_devops_diploma_CICD/Terraform 
 #: terraform init
 
 TIPS: Dont forget to replace VARS to your data in provider block (main.tf)
