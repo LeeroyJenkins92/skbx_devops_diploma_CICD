@@ -36,9 +36,12 @@ users:
 # Installing runner and Nginx
 
 TIPS: Ensure that you have installed ansible and python
+
 Replace ipv4 adresses in hosts file to your data
+
 Also keep your secrets in ansible vault
 
 #: ansible-playbook -b -e@ansible-secrets.enc ./runner.yml -vvv
+
 #: ansible-playbook -b -e@ansible-secrets.enc ./nginx.yml -vvv
 
