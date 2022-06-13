@@ -33,6 +33,14 @@ users:
 #: terraform plan
 #: terraform apply
 
+# GitLab part
+
+For CI\CD I'm using GitLab. For example you can download my test react app.
+
+#: git clone https://gitlab.com/LeeroyJenkins92/deploy-blue-green-main
+
+And push it to your gitlab repo. Below is the installation option for the runner and the frontend for publishing the deployment.
+
 # Installing runner and Nginx
 
 TIPS: Ensure that you have installed ansible and python
