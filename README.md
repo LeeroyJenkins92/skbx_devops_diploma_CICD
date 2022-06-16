@@ -4,7 +4,7 @@
 
 # Terraform Part#
 
-#: git clone https://github.com/LeeroyJenkins92/skbx_devops_diploma_CICD
+#: git clone https://github.com/LeeroyJenkins92/skillbox_devops_diploma_INFRA.git
 
 #: cd ./skbx_devops_diploma_CICD/Terraform 
 #: terraform init
@@ -35,9 +35,9 @@ users:
 
 # GitLab part
 
-For CI\CD I'm using GitLab. For example you can download my test react app.
+For CI\CD I'm using GitLab. For example you can download my test GoLang app.
 
-#: git clone https://gitlab.com/LeeroyJenkins92/deploy-blue-green-main
+#: git clone https://gitlab.com/LeeroyJenkins92/deploy-go-app.git
 
 And push it to your gitlab repo. Below is the installation option for the runner and the frontend for publishing the deployment.
 
